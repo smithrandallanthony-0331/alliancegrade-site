@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Mini-Assessment — AllianceGrade™</title>
+<meta name="description" content="Get a free 6-question snapshot of your partner ecosystem's health, scored using the same methodology as the full AllianceGrade assessment.">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="assets/AllianceGrade_Icon_180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1B2A4A; --navy-dk:#121D33; --teal:#00A896; --teal-dk:#028090;
+    --ice:#EEF4F3; --ice2:#E2EEEC; --white:#FFFFFF; --gray:#5B6B7A; --gray-lt:#8A97A3;
+    --track:#DCE4E9; --text:#26313E; --red:#C0392B; --amber:#D68910; --green:#1E8449;
+    --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{ font-family:'Inter',-apple-system,sans-serif; color:var(--text); background:var(--white); line-height:1.55; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3,.serif{ font-family:'Source Serif 4', Georgia, serif; }
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
+  .wrap{ max-width:760px; margin:0 auto; padding:0 24px; }
+  .eyebrow{ text-transform:uppercase; letter-spacing:.14em; font-weight:700; font-size:.78rem; color:var(--teal-dk); margin-bottom:14px; display:block; text-align:center; }
+  .btn{ display:inline-flex; align-items:center; gap:8px; padding:14px 26px; border-radius:999px; font-weight:600; font-size:.95rem; cursor:pointer; border:none; transition:transform .18s ease, background .18s ease; }
+  .btn-primary{ background:var(--teal); color:#fff; box-shadow:0 12px 24px -10px rgba(0,168,150,.55); }
+  .btn-primary:hover{ transform:translateY(-2px); background:var(--teal-dk); }
+  .btn-outline{ background:transparent; color:var(--navy); border:1.5px solid var(--navy); }
+  .btn-outline:hover{ background:var(--navy); color:#fff; }
+
+  header.topbar{ background:var(--navy); padding:18px 0; }
+  header.topbar .wrap{ display:flex; align-items:center; justify-content:space-between; max-width:1140px; }
+  .brand{ display:flex; align-items:center; gap:10px; font-weight:700; font-size:1.1rem; color:#fff; font-family:'Source Serif 4',serif; }
+  .brand img{ height:28px; }
+  .brand .g{ color:var(--teal); }
+  header.topbar a.back{ color:#C9D6E3; font-size:.88rem; font-weight:500; }
+  header.topbar a.back:hover{ color:#fff; }
+
+  .hero{ padding:64px 0 40px; text-align:center; background:linear-gradient(180deg, var(--ice) 0%, #fff 100%); }
+  .hero h1{ font-size:clamp(1.8rem, 4vw, 2.5rem); color:var(--navy); font-weight:700; line-height:1.2; }
+  .hero p{ color:var(--gray); font-size:1.05rem; max-width:560px; margin:16px auto 0; }
+  .hero .meta{ margin-top:22px; display:flex; gap:26px; justify-content:center; flex-wrap:wrap; font-size:.85rem; color:var(--gray); }
+  .hero .meta b{ color:var(--teal-dk); }
+
+  main{ padding:20px 0 90px; }
+  .qcard{ background:var(--ice); border-radius:var(--radius); padding:28px 30px; margin-bottom:20px; }
+  .qcard .qnum{ font-family:'Source Serif 4',serif; font-weight:700; color:var(--teal-dk); font-size:.85rem; letter-spacing:.04em; }
+  .qcard .qtext{ font-size:1.08rem; font-weight:600; color:var(--navy); margin:8px 0 18px; }
+  .scale{ display:flex; gap:8px; flex-wrap:wrap; }
+  .scale label{ flex:1; min-width:110px; }
+  .scale input[type=radio]{ display:none; }
+  .scale .opt{
+    display:block; text-align:center; padding:12px 10px; border-radius:10px; border:1.5px solid #D9E2E8;
+    background:#fff; font-size:.85rem; font-weight:600; color:var(--gray); cursor:pointer;
+    transition:all .15s ease;
+  }
+  .scale input[type=radio]:checked + .opt{ background:var(--teal); border-color:var(--teal); color:#fff; }
+  .scale .opt:hover{ border-color:var(--teal); }
+
+  .contact-card{ background:var(--navy); border-radius:var(--radius); padding:30px 30px 34px; color:#fff; }
+  .contact-card h2{ font-size:1.3rem; margin-bottom:6px; }
+  .contact-card p.sub{ color:#B9C8D6; font-size:.92rem; margin-bottom:20px; }
+  .contact-card label{ display:block; font-size:.82rem; font-weight:600; color:#C9D6E3; margin:14px 0 6px; }
+  .contact-card input{
+    width:100%; padding:11px 14px; border-radius:8px; border:1px solid rgba(255,255,255,.2);
+    background:rgba(255,255,255,.06); color:#fff; font-size:.95rem; font-family:inherit;
+  }
+  .contact-card input::placeholder{ color:#7E93A8; }
+  .contact-card input:focus{ outline:2px solid var(--teal); }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+  .submit-row{ text-align:center; margin-top:30px; }
+  .submit-row .btn{ font-size:1rem; padding:16px 40px; }
+  .errormsg{ display:none; text-align:center; color:var(--red); font-size:.88rem; margin-top:14px; }
+
+  /* RESULTS */
+  #results{ display:none; text-align:center; padding:20px 0 90px; }
+  .score-ring-wrap{ display:flex; justify-content:center; margin:30px 0; }
+  .score-card{ background:var(--navy); border-radius:20px; padding:40px; width:100%; max-width:340px; }
+  .score-card .cap{ font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:#9FB2C4; font-weight:700; }
+  .score-num{ font-family:'Source Serif 4',serif; font-size:4rem; font-weight:700; color:#fff; margin:14px 0; }
+  .tier-badge{ display:inline-block; padding:8px 22px; border-radius:999px; color:#fff; font-weight:700; font-size:.95rem; letter-spacing:.03em; }
+  #results h2{ color:var(--navy); font-size:1.6rem; margin:10px 0 12px; }
+  #results p.msg{ color:var(--gray); max-width:520px; margin:0 auto 30px; font-size:1.02rem; }
+  .cta-box{ background:var(--ice); border-radius:var(--radius); padding:30px; margin-top:10px; }
+  .cta-box p{ color:var(--gray); margin-bottom:18px; }
+
+  footer{ background:var(--navy-dk); color:#9FB2C4; padding:36px 0; text-align:center; font-size:.85rem; }
+  footer a{ color:#C9D6E3; }
+  footer a:hover{ color:#fff; }
+
+  @media (max-width:600px){
+    .grid2{ grid-template-columns:1fr; }
+    .scale{ flex-direction:column; }
+    .scale label{ min-width:auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a href="index.html" class="brand"><img src="assets/mark_icon_color.svg" alt=""> Alliance<span class="g">Grade</span></a>
+    <a href="index.html" class="back">&larr; Back to site</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Free Mini-Assessment</span>
+    <h1>How healthy is your partner ecosystem, really?</h1>
+    <p>Answer 6 quick questions — scored with the same methodology behind the full AllianceGrade assessment — and get an instant snapshot score.</p>
+    <div class="meta">
+      <span><b>2 minutes</b> to complete</span>
+      <span><b>Instant</b> score</span>
+      <span><b>No cost</b>, no obligation</span>
+    </div>
+  </div>
+</section>
+
+<main>
+  <div class="wrap">
+    <form id="miniForm">
+
+      <div class="qcard">
+        <div class="qnum">QUESTION 1 &middot; STRATEGIC FOUNDATION</div>
+        <div class="qtext">Does your partner program have a documented strategy and an actively engaged executive sponsor?</div>
+        <div class="scale" data-q="q1">
+          <label><input type="radio" name="q1" value="1" required><span class="opt">Not at all</span></label>
+          <label><input type="radio" name="q1" value="2"><span class="opt">A little</span></label>
+          <label><input type="radio" name="q1" value="3"><span class="opt">Somewhat</span></label>
+          <label><input type="radio" name="q1" value="4"><span class="opt">Mostly</span></label>
+          <label><input type="radio" name="q1" value="5"><span class="opt">Fully</span></label>
+        </div>
+      </div>
+
+      <div class="qcard">
+        <div class="qnum">QUESTION 2 &middot; RECRUITMENT &amp; SEGMENTATION</div>
+        <div class="qtext">Are you deliberately targeting and tiering the right partners — or mostly reactive?</div>
+        <div class="scale" data-q="q2">
+          <label><input type="radio" name="q2" value="1" required><span class="opt">Purely reactive</span></label>
+          <label><input type="radio" name="q2" value="2"><span class="opt">A little</span></label>
+          <label><input type="radio" name="q2" value="3"><span class="opt">Somewhat</span></label>
+          <label><input type="radio" name="q2" value="4"><span class="opt">Mostly</span></label>
+          <label><input type="radio" name="q2" value="5"><span class="opt">Fully deliberate</span></label>
+        </div>
+      </div>
+
+      <div class="qcard">
+        <div class="qnum">QUESTION 3 &middot; ENABLEMENT &amp; ACTIVATION</div>
+        <div class="qtext">Can a newly signed partner actually sell your product independently within 30 days?</div>
+        <div class="scale" data-q="q3">
+          <label><input type="radio" name="q3" value="1" required><span class="opt">No process</span></label>
+          <label><input type="radio" name="q3" value="2"><span class="opt">Barely</span></label>
+          <label><input type="radio" name="q3" value="3"><span class="opt">Sometimes</span></label>
+          <label><input type="radio" name="q3" value="4"><span class="opt">Usually</span></label>
+          <label><input type="radio" name="q3" value="5"><span class="opt">Reliably</span></label>
+        </div>
+      </div>
+
+      <div class="qcard">
+        <div class="qnum">QUESTION 4 &middot; CO-SELL &amp; PIPELINE ENGINE</div>
+        <div class="qtext">Do you have a working deal-registration process that partners actually use?</div>
+        <div class="scale" data-q="q4">
+          <label><input type="radio" name="q4" value="1" required><span class="opt">Doesn't exist</span></label>
+          <label><input type="radio" name="q4" value="2"><span class="opt">Rarely used</span></label>
+          <label><input type="radio" name="q4" value="3"><span class="opt">Sometimes used</span></label>
+          <label><input type="radio" name="q4" value="4"><span class="opt">Usually used</span></label>
+          <label><input type="radio" name="q4" value="5"><span class="opt">Consistently used</span></label>
+        </div>
+      </div>
+
+      <div class="qcard">
+        <div class="qnum">QUESTION 5 &middot; PROGRAM INFRASTRUCTURE</div>
+        <div class="qtext">Are your partner agreements, pricing, and portal standardized and documented?</div>
+        <div class="scale" data-q="q5">
+          <label><input type="radio" name="q5" value="1" required><span class="opt">Ad hoc</span></label>
+          <label><input type="radio" name="q5" value="2"><span class="opt">A little</span></label>
+          <label><input type="radio" name="q5" value="3"><span class="opt">Somewhat</span></label>
+          <label><input type="radio" name="q5" value="4"><span class="opt">Mostly</span></label>
+          <label><input type="radio" name="q5" value="5"><span class="opt">Fully standardized</span></label>
+        </div>
+      </div>
+
+      <div class="qcard">
+        <div class="qnum">QUESTION 6 &middot; PARTNER EXPERIENCE</div>
+        <div class="qtext">Do you actually know your partner satisfaction score — or would you have no idea?</div>
+        <div class="scale" data-q="q6">
+          <label><input type="radio" name="q6" value="1" required><span class="opt">No idea</span></label>
+          <label><input type="radio" name="q6" value="2"><span class="opt">Rough guess</span></label>
+          <label><input type="radio" name="q6" value="3"><span class="opt">Somewhat sure</span></label>
+          <label><input type="radio" name="q6" value="4"><span class="opt">Pretty confident</span></label>
+          <label><input type="radio" name="q6" value="5"><span class="opt">Measured &amp; tracked</span></label>
+        </div>
+      </div>
+
+      <div class="contact-card">
+        <h2>Almost done — where should we send your score?</h2>
+        <p class="sub">Your results appear instantly on this page. No spam, ever.</p>
+        <div class="grid2">
+          <div>
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required placeholder="Jordan Lee">
+          </div>
+          <div>
+            <label for="company">Company</label>
+            <input type="text" id="company" name="company" required placeholder="Acme Robotics Inc.">
+          </div>
+        </div>
+        <div class="grid2">
+          <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required placeholder="jordan@acme.com">
+          </div>
+          <div>
+            <label for="phone">Phone (optional)</label>
+            <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
+          </div>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <button type="submit" class="btn btn-primary" id="submitBtn">Get My Free Score</button>
+        <div class="errormsg" id="errorMsg">Something went wrong submitting your answers — please email randy@alliancegrade.com directly and we'll get you your score.</div>
+      </div>
+    </form>
+  </div>
+</main>
+
+<section id="results">
+  <div class="wrap">
+    <span class="eyebrow">Your Results</span>
+    <div class="score-ring-wrap">
+      <div class="score-card">
+        <div class="cap">Your Snapshot Score</div>
+        <div class="score-num" id="scoreNum">--</div>
+        <div id="tierBadge" class="tier-badge">--</div>
+      </div>
+    </div>
+    <h2 id="resultHeadline">Here's where you stand.</h2>
+    <p class="msg" id="resultMsg"></p>
+    <div class="cta-box">
+      <p><strong>This is a 6-question snapshot.</strong> The full AllianceGrade Assessment scores 30 specific, evidence-based criteria across the same 6 pillars and gives you an exact, prioritized action plan — not just a number.</p>
+      <a href="mailto:randy@alliancegrade.com?subject=AllianceGrade%20Full%20Assessment%20Inquiry" class="btn btn-primary">Book the Full Assessment</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>&copy; <span id="year"></span> AllianceGrade. All rights reserved. &middot; <a href="mailto:randy@alliancegrade.com">randy@alliancegrade.com</a> &middot; <a href="tel:+19725671294">(972) 567-1294</a></p>
+  </div>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// ============================================================
+// IMPORTANT — one-time setup required:
+// Replace YOUR_FORM_ID below with your real Formspree endpoint ID
+// (from https://formspree.io — see setup instructions provided separately).
+// ============================================================
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xgaezwgv";
+
+const WEIGHTS = { q1: 15, q2: 15, q3: 20, q4: 20, q5: 15, q6: 15 };
+
+function tierFor(score) {
+  if (score >= 80) return { label: "OPTIMIZED", color: "#1E8449" };
+  if (score >= 60) return { label: "ESTABLISHED", color: "#00A896" };
+  if (score >= 40) return { label: "DEVELOPING", color: "#D68910" };
+  return { label: "CRITICAL", color: "#C0392B" };
+}
+
+function messageFor(tier) {
+  const msgs = {
+    OPTIMIZED: "Your fundamentals sound strong. The full assessment can help confirm what's working and find the smaller gaps that separate a good program from a great one.",
+    ESTABLISHED: "You've got a solid foundation with some real gaps. The full assessment pinpoints exactly which ones are costing you the most pipeline.",
+    DEVELOPING: "The basics exist but execution is inconsistent — a very common and very fixable place to be. The full assessment shows you what to fix first.",
+    CRITICAL: "There are foundational gaps limiting your program's revenue impact right now. The good news: these are the fastest to fix once you know exactly where they are.",
+  };
+  return msgs[tier.label];
+}
+
+document.getElementById('miniForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const errorMsg = document.getElementById('errorMsg');
+  errorMsg.style.display = 'none';
+  btn.textContent = 'Calculating...';
+  btn.disabled = true;
+
+  const formData = new FormData(e.target);
+  let weightedSum = 0;
+  Object.keys(WEIGHTS).forEach((q) => {
+    const val = parseInt(formData.get(q), 10);
+    weightedSum += (val / 5) * WEIGHTS[q];
+  });
+  const score = Math.round(weightedSum);
+  const tier = tierFor(score);
+
+  // Send the lead + their answers to Formspree
+  let deliveryFailed = false;
+  try {
+    const resp = await fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: (() => {
+        formData.append('AllianceGrade Snapshot Score', score + ' (' + tier.label + ')');
+        return formData;
+      })(),
+    });
+    if (!resp.ok) deliveryFailed = true;
+  } catch (err) {
+    deliveryFailed = true;
+  }
+  if (deliveryFailed) {
+    // Even if the email notification fails, still show the visitor their
+    // score — but let them know to follow up directly just in case.
+    errorMsg.style.display = 'block';
+  }
+
+  document.getElementById('scoreNum').textContent = score;
+  const badge = document.getElementById('tierBadge');
+  badge.textContent = tier.label;
+  badge.style.background = tier.color;
+  document.getElementById('resultMsg').textContent = messageFor(tier);
+
+  document.getElementById('miniForm').closest('main').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  btn.textContent = 'Get My Free Score';
+  btn.disabled = false;
+});
+</script>
+
+</body>
+</html>

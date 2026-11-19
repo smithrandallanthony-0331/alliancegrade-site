@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 872 120" width="872" height="120">
+
+<g>
+
+<circle cx="60.0" cy="60.0" r="45.0" fill="none" stroke="#D9E2E8" stroke-width="12.0"/>
+<path d="M 60.00 15.00 A 45.0 45.0 0 1 1 15.80 51.57" fill="none" stroke="#00A896" stroke-width="12.0" stroke-linecap="round"/>
+<path d="M 41.10 60.90 L 56.40 75.30 L 80.70 42.90" fill="none" stroke="#1B2A4A" stroke-width="7.4399999999999995" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<text x="146" y="85" font-family="Georgia, 'Cambria', serif" font-weight="700" font-size="74">
+<tspan fill="#1B2A4A">Alliance</tspan><tspan fill="#028090">Grade</tspan>
+</text>
+</svg>
