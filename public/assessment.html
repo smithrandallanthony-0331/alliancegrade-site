@@ -265,25 +265,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
 // ============================================================
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xgaezwgv";
 
-const WEIGHTS = { q1: 15, q2: 15, q3: 20, q4: 20, q5: 15, q6: 15 };
-
-function tierFor(score) {
-  if (score >= 80) return { label: "OPTIMIZED", color: "#1E8449" };
-  if (score >= 60) return { label: "ESTABLISHED", color: "#00A896" };
-  if (score >= 40) return { label: "DEVELOPING", color: "#D68910" };
-  return { label: "CRITICAL", color: "#C0392B" };
-}
-
-function messageFor(tier) {
-  const msgs = {
-    OPTIMIZED: "Your fundamentals sound strong. The full assessment can help confirm what's working and find the smaller gaps that separate a good program from a great one.",
-    ESTABLISHED: "You've got a solid foundation with some real gaps. The full assessment pinpoints exactly which ones are costing you the most pipeline.",
-    DEVELOPING: "The basics exist but execution is inconsistent — a very common and very fixable place to be. The full assessment shows you what to fix first.",
-    CRITICAL: "There are foundational gaps limiting your program's revenue impact right now. The good news: these are the fastest to fix once you know exactly where they are.",
-  };
-  return msgs[tier.label];
-}
-
 document.getElementById('miniForm').addEventListener('submit', async function (e) {
   e.preventDefault();
   const btn = document.getElementById('submitBtn');
@@ -293,32 +274,45 @@ document.getElementById('miniForm').addEventListener('submit', async function (e
   btn.disabled = true;
 
   const formData = new FormData(e.target);
-  let weightedSum = 0;
-  Object.keys(WEIGHTS).forEach((q) => {
-    const val = parseInt(formData.get(q), 10);
-    weightedSum += (val / 5) * WEIGHTS[q];
-  });
-  const score = Math.round(weightedSum);
-  const tier = tierFor(score);
+
+  // Scoring happens on the server (see /api/score) — nothing about the
+  // weighting is exposed in this page.
+  const answers = {};
+  ['q1','q2','q3','q4','q5','q6'].forEach((q) => { answers[q] = parseInt(formData.get(q), 10); });
+  let result = null;
+  try {
+    const sr = await fetch('/api/score', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ answers }),
+    });
+    if (sr.ok) result = await sr.json();
+  } catch (err) { /* handled below */ }
+
+  if (!result) {
+    errorMsg.textContent = "We couldn't calculate your score just now — please try again in a moment or email randy@alliancegrade.com.";
+    errorMsg.style.display = 'block';
+    btn.textContent = 'Get My Free Score';
+    btn.disabled = false;
+    return;
+  }
+  const score = result.score;
+  const tier = { label: result.label, color: result.color };
 
   // Send the lead + their answers to Formspree
   let deliveryFailed = false;
   try {
+    formData.append('AllianceGrade Snapshot Score', score + ' (' + tier.label + ')');
     const resp = await fetch(FORMSPREE_ENDPOINT, {
       method: 'POST',
       headers: { 'Accept': 'application/json' },
-      body: (() => {
-        formData.append('AllianceGrade Snapshot Score', score + ' (' + tier.label + ')');
-        return formData;
-      })(),
+      body: formData,
     });
     if (!resp.ok) deliveryFailed = true;
   } catch (err) {
     deliveryFailed = true;
   }
   if (deliveryFailed) {
-    // Even if the email notification fails, still show the visitor their
-    // score — but let them know to follow up directly just in case.
     errorMsg.style.display = 'block';
   }
 
@@ -326,7 +320,7 @@ document.getElementById('miniForm').addEventListener('submit', async function (e
   const badge = document.getElementById('tierBadge');
   badge.textContent = tier.label;
   badge.style.background = tier.color;
-  document.getElementById('resultMsg').textContent = messageFor(tier);
+  document.getElementById('resultMsg').textContent = result.message;
 
   document.getElementById('miniForm').closest('main').style.display = 'none';
   document.getElementById('results').style.display = 'block';
