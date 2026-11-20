@@ -58,6 +58,12 @@ export default {
       }
       return json({ score, label: tier.label, color: tier.color, message: MESSAGES[tier.label] });
     }
+    // /work → the home page, scrolled to "Work With Me" (a clean link that
+    // survives LinkedIn, which strips #fragments from saved URLs).
+    if (url.pathname === "/work/") return Response.redirect(url.origin + "/work", 301);
+    if (url.pathname === "/work") {
+      return env.ASSETS.fetch(new Request(url.origin + "/", request));
+    }
     return env.ASSETS.fetch(request);
   },
 };

@@ -436,5 +436,14 @@
   });
 </script>
 
+<script>
+  // Deep link: alliancegrade.com/work opens the page scrolled to "Work With Me"
+  if (location.pathname.replace(/\/$/, '') === '/work') {
+    window.addEventListener('load', function () {
+      var el = document.getElementById('work');
+      if (el) el.scrollIntoView();
+    });
+  }
+</script>
 </body>
 </html>
