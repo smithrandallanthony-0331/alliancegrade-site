@@ -23,7 +23,7 @@ const json = (obj, status = 200) =>
   });
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === "/api/score") {
       if (request.method !== "POST") return json({ error: "POST only" }, 405);
@@ -38,6 +38,24 @@ export default {
       }
       const score = Math.round(sum);
       const tier = tierFor(score);
+
+      // Instant phone alert (push via ntfy). Contains only the score — no
+      // visitor personal data. Only fires for requests from our own site.
+      const origin = request.headers.get("origin") || "";
+      const fromSite = /^https:\/\/(www\.)?alliancegrade\.com$/.test(origin);
+      if (env.NTFY_TOPIC && fromSite) {
+        ctx.waitUntil(
+          fetch("https://ntfy.sh/" + encodeURIComponent(env.NTFY_TOPIC), {
+            method: "POST",
+            headers: {
+              Title: "New AllianceGrade assessment",
+              Tags: "chart_with_upwards_trend",
+              Priority: "high",
+            },
+            body: "Someone just completed the mini-assessment: " + score + " (" + tier.label + "). Check your email / Formspree for their contact details.",
+          }).catch(() => {})
+        );
+      }
       return json({ score, label: tier.label, color: tier.color, message: MESSAGES[tier.label] });
     }
     return env.ASSETS.fetch(request);
