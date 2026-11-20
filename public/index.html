@@ -165,11 +165,30 @@
   .footer-links a:hover{ color:#fff; }
   .footer-bottom{ margin-top:40px; padding-top:24px; border-top:1px solid rgba(255,255,255,.08); font-size:.82rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
 
+
+  /* ---- Work With Me ---- */
+  .work{ background:var(--ice); }
+  .offer-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:46px; }
+  .offer{ background:#fff; border:1px solid rgba(27,42,74,.08); border-radius:var(--radius); padding:32px 28px; display:flex; flex-direction:column; box-shadow:var(--shadow); }
+  .offer .tag{ font-size:.72rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--teal-dk); margin-bottom:10px; }
+  .offer h3{ font-size:1.3rem; color:var(--navy); margin-bottom:10px; }
+  .offer p{ color:var(--gray); font-size:.95rem; margin-bottom:14px; }
+  .offer ul{ list-style:none; margin:0 0 22px; }
+  .offer li{ position:relative; padding-left:22px; margin-bottom:8px; font-size:.92rem; color:var(--text); }
+  .offer li::before{ content:""; position:absolute; left:0; top:.55em; width:10px; height:6px; border-left:2px solid var(--teal); border-bottom:2px solid var(--teal); transform:rotate(-45deg); }
+  .offer .btn{ margin-top:auto; justify-content:center; }
+  .offer.featured{ border:2px solid var(--teal); }
+  .work-note{ margin-top:30px; text-align:center; color:var(--gray); font-size:.95rem; }
+  .work-note b{ color:var(--navy); }
+  .avail{ display:inline-flex; align-items:center; gap:8px; background:#fff; border:1px solid rgba(27,42,74,.1); border-radius:999px; padding:8px 16px; font-size:.85rem; font-weight:600; color:var(--navy); margin-bottom:18px; }
+  .avail i{ width:9px; height:9px; border-radius:50%; background:var(--teal); display:inline-block; }
+
   @media (max-width:900px){
     .navlinks{ display:none; }
     .hero-grid, .problem-grid, .about-grid{ grid-template-columns:1fr; }
     .pillar-grid{ grid-template-columns:1fr 1fr; }
     .steps{ grid-template-columns:1fr; }
+    .offer-grid{ grid-template-columns:1fr; }
     section{ padding:70px 0; }
     .hero{ padding:150px 0 80px; }
   }
@@ -189,6 +208,7 @@
       <a href="#problem">Why It Matters</a>
       <a href="#pillars">Methodology</a>
       <a href="#process">How It Works</a>
+      <a href="#work">Work With Me</a>
       <a href="#about">About</a>
       <a href="assessment.html">Free Assessment</a>
       <a href="#contact" class="btn btn-outline">Book a Call</a>
@@ -204,7 +224,7 @@
       <p class="lede">AllianceGrade™ is a weighted, 6-pillar assessment that scores the health of your partner program on a 0–100 scale — and tells you precisely what to fix first.</p>
       <div class="hero-ctas">
         <a href="assessment.html" class="btn btn-primary">Take the Free 2-Minute Assessment</a>
-        <a href="#contact" class="btn btn-ghost">Book a Scoping Call</a>
+        <a href="#work" class="btn btn-ghost">See How I Can Help</a>
       </div>
       <div class="hero-stats">
         <div><b>6</b><span>Weighted Pillars</span></div>
@@ -311,6 +331,54 @@
   </div>
 </section>
 
+<!-- ============ WORK WITH ME ============ -->
+<section class="work" id="work">
+  <div class="wrap">
+    <span class="avail"><i></i> Currently accepting a limited number of engagements</span>
+    <span class="eyebrow">Work With Me</span>
+    <h2>Find the gaps. Then close them.</h2>
+    <p class="lede">Start with a free snapshot, go deeper with the full AllianceGrade assessment, and bring in a fractional partnerships director when you need someone to run the program — without the cost of a full-time hire.</p>
+    <div class="offer-grid">
+      <div class="offer">
+        <span class="tag">Start here &middot; Free</span>
+        <h3>Partner Snapshot</h3>
+        <p>A 2-minute self-assessment that gives you an instant AllianceGrade score across the six pillars.</p>
+        <ul>
+          <li>Instant 0&ndash;100 score and tier</li>
+          <li>See which pillars are holding you back</li>
+          <li>No call required</li>
+        </ul>
+        <a href="assessment.html" class="btn btn-outline">Take the Free Assessment</a>
+      </div>
+      <div class="offer featured">
+        <span class="tag">Fixed scope &middot; About 3 weeks</span>
+        <h3>Full AllianceGrade Assessment</h3>
+        <p>An independent, evidence-based review of your partner ecosystem against all 30 criteria.</p>
+        <ul>
+          <li>Stakeholder interviews and data review</li>
+          <li>Scored report across six weighted pillars</li>
+          <li>Prioritized 90-day corrective-action roadmap</li>
+          <li>Leadership readout</li>
+        </ul>
+        <a href="mailto:randy@alliancegrade.com?subject=AllianceGrade%20Full%20Assessment%20Inquiry" class="btn btn-primary">Book the Full Assessment</a>
+      </div>
+      <div class="offer">
+        <span class="tag">Ongoing &middot; Part-time retainer</span>
+        <h3>Fractional Partnerships Director</h3>
+        <p>Senior partnership leadership on a part-time basis, so the roadmap actually gets executed.</p>
+        <ul>
+          <li>Build or run your partner program</li>
+          <li>Recruit, onboard and enable partners</li>
+          <li>Co-sell motions, partner pipeline and reporting</li>
+          <li>Partner agreements, pricing and incentives</li>
+        </ul>
+        <a href="mailto:randy@alliancegrade.com?subject=Fractional%20Partnerships%20Director%20Inquiry" class="btn btn-outline">Discuss a Fractional Engagement</a>
+      </div>
+    </div>
+    <p class="work-note"><b>Already have an assessment with me?</b> The assessment fee is credited toward a fractional engagement that starts within 60 days.</p>
+  </div>
+</section>
+
 <!-- ============ ABOUT ============ -->
 <section class="about" id="about">
   <div class="wrap about-grid">
@@ -349,6 +417,7 @@
         <a href="#problem">Why It Matters</a>
         <a href="#pillars">Methodology</a>
         <a href="#process">How It Works</a>
+        <a href="#work">Work With Me</a>
         <a href="#about">About</a>
         <a href="https://linkedin.com/in/randyasmith" target="_blank" rel="noopener">LinkedIn</a>
       </div>
