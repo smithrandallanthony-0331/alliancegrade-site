@@ -58,6 +58,22 @@ export default {
       }
       return json({ score, label: tier.label, color: tier.color, message: MESSAGES[tier.label] });
     }
+    if (url.pathname === "/api/notify") {
+      if (request.method !== "POST") return json({ error: "POST only" }, 405);
+      const origin = request.headers.get("origin") || "";
+      const fromSite = /^https:\/\/(www\.)?alliancegrade\.com$/.test(origin);
+      if (env.NTFY_TOPIC && fromSite) {
+        ctx.waitUntil(
+          fetch("https://ntfy.sh/" + encodeURIComponent(env.NTFY_TOPIC), {
+            method: "POST",
+            headers: { Title: "AllianceGrade lead: breakdown requested", Tags: "star", Priority: "urgent" },
+            body: "A visitor just asked for their breakdown. Check your email / Formspree for their details and reply within one business day.",
+          }).catch(() => {})
+        );
+      }
+      return json({ ok: true });
+    }
+
     // /work → the home page, scrolled to "Work With Me" (a clean link that
     // survives LinkedIn, which strips #fragments from saved URLs).
     if (url.pathname === "/work/") return Response.redirect(url.origin + "/work", 301);

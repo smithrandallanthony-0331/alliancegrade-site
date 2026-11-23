@@ -91,6 +91,15 @@
   .submit-row .btn{ font-size:1rem; padding:16px 40px; }
   .errormsg{ display:none; text-align:center; color:var(--red); font-size:.88rem; margin-top:14px; }
 
+
+  #leadForm{ text-align:left; max-width:640px; margin:34px auto 0; }
+  #results #leadForm h2{ color:#fff; font-size:1.3rem; margin:0 0 6px; }
+  #leadForm{ margin-bottom:26px; }
+  #leadForm .btn{ margin-top:20px; font-size:.98rem; padding:14px 32px; }
+  #leadForm .errormsg{ display:none; color:#FFB4A8; text-align:left; }
+  #leadThanks{ display:none; background:var(--ice); border-radius:var(--radius); padding:26px 28px; margin:34px auto 0; max-width:640px; text-align:center; color:var(--navy); }
+  #leadThanks p{ color:var(--gray); margin:8px 0 0; }
+
   /* RESULTS */
   #results{ display:none; text-align:center; padding:20px 0 90px; }
   .score-ring-wrap{ display:flex; justify-content:center; margin:30px 0; }
@@ -131,7 +140,7 @@
     <div class="meta">
       <span><b>2 minutes</b> to complete</span>
       <span><b>Instant</b> score</span>
-      <span><b>No cost</b>, no obligation</span>
+      <span><b>No email</b> needed to see your score</span>
     </div>
   </div>
 </section>
@@ -212,34 +221,9 @@
         </div>
       </div>
 
-      <div class="contact-card">
-        <h2>Almost done — where should we send your score?</h2>
-        <p class="sub">Your results appear instantly on this page. No spam, ever.</p>
-        <div class="grid2">
-          <div>
-            <label for="name">Full Name</label>
-            <input type="text" id="name" name="name" required placeholder="Jordan Lee">
-          </div>
-          <div>
-            <label for="company">Company</label>
-            <input type="text" id="company" name="company" required placeholder="Acme Robotics Inc.">
-          </div>
-        </div>
-        <div class="grid2">
-          <div>
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required placeholder="jordan@acme.com">
-          </div>
-          <div>
-            <label for="phone">Phone (optional)</label>
-            <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
-          </div>
-        </div>
-      </div>
-
       <div class="submit-row">
-        <button type="submit" class="btn btn-primary" id="submitBtn">Get My Free Score</button>
-        <div class="errormsg" id="errorMsg">Something went wrong submitting your answers — please email randy@alliancegrade.com directly and we'll get you your score.</div>
+        <button type="submit" class="btn btn-primary" id="submitBtn">See My Score</button>
+        <div class="errormsg" id="errorMsg">We couldn't calculate your score just now — please try again in a moment or email randy@alliancegrade.com.</div>
       </div>
     </form>
   </div>
@@ -257,6 +241,34 @@
     </div>
     <h2 id="resultHeadline">Here's where you stand.</h2>
     <p class="msg" id="resultMsg"></p>
+    <form id="leadForm" class="contact-card">
+      <h2>Want your pillar-by-pillar breakdown?</h2>
+      <p class="sub">Leave your details and I'll personally email you a read on where your answers point, within one business day. No spam, ever.</p>
+      <div class="grid2">
+        <div>
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" required placeholder="Jordan Lee">
+        </div>
+        <div>
+          <label for="company">Company</label>
+          <input type="text" id="company" name="company" required placeholder="Acme Robotics Inc.">
+        </div>
+      </div>
+      <div class="grid2">
+        <div>
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required placeholder="jordan@acme.com">
+        </div>
+        <div>
+          <label for="phone">Phone (optional)</label>
+          <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" id="leadBtn">Send Me My Breakdown</button>
+      <div class="errormsg" id="leadError">That didn't go through — please email randy@alliancegrade.com and mention your score.</div>
+    </form>
+    <div id="leadThanks"><strong>Thank you — got it.</strong><p>I'll email your breakdown within one business day.</p></div>
+
     <div class="cta-box">
       <p><strong>This is a 6-question snapshot.</strong> The full AllianceGrade Assessment scores 30 specific, evidence-based criteria across the same 6 pillars and gives you an exact, prioritized action plan — not just a number.</p>
       <a href="mailto:randy@alliancegrade.com?subject=AllianceGrade%20Full%20Assessment%20Inquiry" class="btn btn-primary">Book the Full Assessment</a>
@@ -273,12 +285,10 @@
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// ============================================================
-// IMPORTANT — one-time setup required:
-// Replace YOUR_FORM_ID below with your real Formspree endpoint ID
-// (from https://formspree.io — see setup instructions provided separately).
-// ============================================================
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xgaezwgv";
+
+// Held in memory only until the visitor chooses to request their breakdown.
+let snapshot = null;
 
 document.getElementById('miniForm').addEventListener('submit', async function (e) {
   e.preventDefault();
@@ -305,44 +315,60 @@ document.getElementById('miniForm').addEventListener('submit', async function (e
   } catch (err) { /* handled below */ }
 
   if (!result) {
-    errorMsg.textContent = "We couldn't calculate your score just now — please try again in a moment or email randy@alliancegrade.com.";
     errorMsg.style.display = 'block';
-    btn.textContent = 'Get My Free Score';
+    btn.textContent = 'See My Score';
     btn.disabled = false;
     return;
   }
-  const score = result.score;
-  const tier = { label: result.label, color: result.color };
 
-  // Send the lead + their answers to Formspree
-  let deliveryFailed = false;
-  try {
-    formData.append('AllianceGrade Snapshot Score', score + ' (' + tier.label + ')');
-    const resp = await fetch(FORMSPREE_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Accept': 'application/json' },
-      body: formData,
-    });
-    if (!resp.ok) deliveryFailed = true;
-  } catch (err) {
-    deliveryFailed = true;
-  }
-  if (deliveryFailed) {
-    errorMsg.style.display = 'block';
-  }
+  snapshot = { answers, score: result.score, label: result.label };
 
-  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('scoreNum').textContent = result.score;
   const badge = document.getElementById('tierBadge');
-  badge.textContent = tier.label;
-  badge.style.background = tier.color;
+  badge.textContent = result.label;
+  badge.style.background = result.color;
   document.getElementById('resultMsg').textContent = result.message;
 
   document.getElementById('miniForm').closest('main').style.display = 'none';
   document.getElementById('results').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  btn.textContent = 'Get My Free Score';
+  btn.textContent = 'See My Score';
   btn.disabled = false;
+});
+
+// Optional second step: the visitor asks for their breakdown.
+document.getElementById('leadForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  if (!snapshot) return;
+  const btn = document.getElementById('leadBtn');
+  const err = document.getElementById('leadError');
+  err.style.display = 'none';
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+
+  const fd = new FormData(e.target);
+  for (const q of Object.keys(snapshot.answers)) fd.append(q, snapshot.answers[q]);
+  fd.append('AllianceGrade Snapshot Score', snapshot.score + ' (' + snapshot.label + ')');
+  fd.append('Request', 'Wants pillar-by-pillar breakdown');
+  fd.append('_subject', 'AllianceGrade breakdown request: ' + (fd.get('company') || '') + ' (' + snapshot.score + ')');
+
+  let ok = false;
+  try {
+    const resp = await fetch(FORMSPREE_ENDPOINT, { method: 'POST', headers: { 'Accept': 'application/json' }, body: fd });
+    ok = resp.ok;
+  } catch (e2) { ok = false; }
+
+  if (ok) {
+    // Push alert to Randy's phone (no personal data is sent).
+    fetch('/api/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'lead' }) }).catch(() => {});
+    document.getElementById('leadForm').style.display = 'none';
+    document.getElementById('leadThanks').style.display = 'block';
+  } else {
+    err.style.display = 'block';
+    btn.textContent = 'Send Me My Breakdown';
+    btn.disabled = false;
+  }
 });
 </script>
 
